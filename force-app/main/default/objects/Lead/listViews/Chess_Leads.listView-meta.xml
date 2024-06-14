@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Chess_Leads</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>Contact_Status__c</columns>
+    <columns>Gender__c</columns>
+    <columns>LEAD.MOBILE_PHONE</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.CITY</columns>
+    <columns>LEAD.UNREAD</columns>
+    <columns>Paid_Status__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <label>Chess Leads</label>
+</ListView>

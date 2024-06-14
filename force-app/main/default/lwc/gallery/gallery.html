@@ -1,0 +1,19 @@
+<template>
+    <div class="gallery-container">
+        <template for:each={images} for:item="image">
+            <div key={image.id} class="gallery-item" onclick={handleImageClick} data-id={image.id}>
+                <img src={image.url} alt={image.title} class="gallery-image"/>
+            </div>
+        </template>
+    </div>
+
+    <!-- Modal for displaying the large image -->
+    <template if:true={isModalOpen}>
+        <div class="modal">
+            <div class="modal-content">
+                <span class="close" onclick={handleModalClose}>&times;</span>
+                <img src={selectedImageUrl} alt="Selected Image" class="large-image"/>
+            </div>
+        </div>
+    </template>
+</template>

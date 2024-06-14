@@ -1,0 +1,23 @@
+<template>
+    <div> <!-- New wrapper div -->
+        <div class="team-container">
+            <h2>Meet the team</h2>
+            <div class="grid-container">
+                <template for:each={teamMembers} for:item="member">
+                    <div key={member.id} class="grid-item" data-linkedin-url={member.linkedinUrl} onclick={handleItemClick}>
+                        <div class="image-container">
+                            <img src={member.imageUrl} alt={member.name} class="image circle" />
+                            <div class="overlay">
+                                <div class="linkedin-logo"></div>
+                            </div>
+                        </div>
+                        <div class="text">
+                            <div class="name">{member.name}</div>
+                            <!--<div class="title">Position</div>-->
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div> <!-- End of page-wrapper -->
+</template>

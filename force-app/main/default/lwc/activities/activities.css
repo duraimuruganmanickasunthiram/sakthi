@@ -1,0 +1,54 @@
+.activities-container {
+    background-image: url('https://i.ibb.co/D9ncRnr/kids-children-people-portrait.jpg'); /* Add your background image */
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    color: #fff; /* Change text color for better contrast */
+}
+
+h2 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.intro-text {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #90ee90; /* Green color for introduction text */
+}
+
+.activities-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.activities-list li {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    padding: 15px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.activity-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.activities-list li span {
+    font-size: 1.1em;
+    flex-grow: 1;
+}

@@ -1,0 +1,100 @@
+<apex:page >
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Footer Example</title>
+        <style>
+            /* Apply padding and margin modifications to html and body */
+            html, body {
+            padding: 0;
+            margin: 0;
+            }
+            html body.sfdcBody {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            padding-right: 0px;
+            padding-left: 0px;
+            margin: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            }
+            body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0px 0px 0px 0px;
+            }
+            .footer {
+            padding: 0px 0px 0px 0px;
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text color */
+            padding: 0px;
+            padding-left: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border: none; /* Remove border */
+            }
+            .footer-logo {
+            max-width: 150px;
+            background-color: white; /* White background for logo */
+            padding: 10px;
+            border-radius: 8px;
+            }
+            .footer-address {
+            text-align: left;
+            line-height: 2;
+            margin: 10px 30px;
+            }
+            .footer-social-media {
+            margin: 20px 0;
+            }
+            .footer-social-media a {
+            color: white; /* White color for social media icons */
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 24px;
+            }
+            .footer-social-media a:hover {
+            color: #333; /* Darker color on hover */
+            }
+            @media (max-width: 768px) {
+            .footer {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: center;
+            padding-top: 20px;
+            height: auto;
+            }
+            .footer-address, {
+            text-align: center;
+            }
+            }
+            .my-container {
+            border: none; /* Remove borders */
+            }
+        </style>
+        <!-- Include FontAwesome for social media icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    </head>
+    
+        <!-- Footer -->
+        <div class="my-container">
+            <footer class="footer">
+                <div>
+                    <img src="https://i.ibb.co/2g9N7Jt/logo-1.png" alt="Company Logo" class="footer-logo"/>
+                    <div class="footer-social-media">
+                        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-address">
+                    <p>Sree Sakthi Narpani Mandram <br/> Molapalayam, Kandasamypalayam(p.o)<br/>Sivagiri(via), Erode(Dt)<br/>Tamil Nadu - 638109</p>
+                    <p>Email: sreesakthinm@company.com <br/> Phone: --------------</p>
+                </div>
+            </footer>
+        </div>
+</apex:page>

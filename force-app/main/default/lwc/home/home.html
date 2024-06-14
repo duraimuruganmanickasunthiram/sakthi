@@ -1,0 +1,94 @@
+<template>
+    
+    <div class="grid-container">
+        <template for:each={items} for:item="item">
+            <div key={item.id} class="grid-item" onclick={handleItemClick} data-item-id={item.id}>
+                <img src={item.imageUrl} alt={item.title} class="image"/>
+                <div class="overlay">
+                    <div class="text">{item.title}</div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <template if:true={showModal} class="modal">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-backdrop_open">
+            <div class="slds-modal slds-fade-in-open custom-modal">
+                <div class="slds-modal__container">
+                    <article class="slds-card" style="border-radius: 10px;">
+                        <div style="background-color: #39B64B; border-top-left-radius: 10px; border-top-right-radius: 10px;" class="slds-card__header slds-grid slds-p-vertical_small">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate slds-modal__header">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-standard-account" title="Identification Document">
+                                        <span class="slds-assistive-text">Identification Document</span>
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <span style="color: #214A7E;" class="slds-card__header-link slds-truncate" title="Identification Document">
+                                            <span><strong>OUR MISSION</strong></span>
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div class="slds-no-flex">
+                                    <lightning-button-icon icon-name="utility:close" alternative-text="Close" title="Close" onclick={handleModalClose}></lightning-button-icon>
+                                </div>
+                            </header>
+                        </div>
+                        <div class="slds-card__body slds-card__body_inner slds-modal__content">
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12">
+                                    <div class="mission-text">
+                                        <p>At the heart of our mission is a commitment to empowering our village and its inhabitants. Through various initiatives and projects, we aim to address the needs and challenges faced by our community members, striving to create a more sustainable and prosperous environment for all.</p>
+                                        <p>One of our primary focuses is on the holistic development of our children. We believe that investing in their education, health, and overall well-being is essential for building a brighter future. Through educational programs, extracurricular activities, and skill development workshops, we seek to nurture their talents and equip them with the tools they need to succeed in life.</p>
+                                        <p>In addition to supporting the younger generation, we also undertake various community development projects. Whether it's infrastructure improvements, healthcare initiatives, or environmental conservation efforts, our organization is committed to make a positive impact at the grassroots level.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template if:true={showEventModal} class="modal">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-backdrop_open">
+            <div class="slds-modal slds-fade-in-open custom-modal">
+                <div class="slds-modal__container">
+                    <article class="slds-card" style="border-radius: 10px;">
+                        <div style="background-color: #39B64B; border-top-left-radius: 10px; border-top-right-radius: 10px;" class="slds-card__header slds-grid slds-p-vertical_small">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate slds-modal__header">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-standard-account" title="Identification Document">
+                                        <span class="slds-assistive-text">Identification Document</span>
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <span style="color: #214A7E;" class="slds-card__header-link slds-truncate" title="Identification Document">
+                                            <span><strong>EVENTS</strong></span>
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div class="slds-no-flex">
+                                    <lightning-button-icon icon-name="utility:close" alternative-text="Close" title="Close" onclick={handleModalClose}></lightning-button-icon>
+                                </div>
+                            </header>
+                        </div>
+                        <div class="slds-card__body slds-card__body_inner slds-modal__content">
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12">
+                                    <div class="events-text">
+                                        <p><b>Past Events:</b> "Namma Ooru Grand Master" Rural level chess tournament on 25 MAY 2024.</p>
+                                        <p><b>Upcoming Events:</b> There are no upcoming events scheduled, please check back later.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

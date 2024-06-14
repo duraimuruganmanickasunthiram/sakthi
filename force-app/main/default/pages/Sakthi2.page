@@ -1,0 +1,464 @@
+<apex:page controller="RazorpayController" sidebar="false" showHeader="false" docType="html-5.0">
+    <apex:slds />
+    
+    <style>
+        
+        .container {
+        padding: 20px;
+        width: 90%;
+        max-width: 600px;
+        margin: 60px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 6px 6px 7px rgba(0, 0, 0, 0.3);
+        }
+        .slds-form-element {
+        margin-bottom: 20px;
+        }
+        .slds-form-element__label {
+        font-weight: bold;
+        }
+        .slds-has-error .slds-form-element__help {
+        color: #e53935;
+        }
+        .form-header {
+        text-align: center;
+        margin-bottom: 20px;
+        }
+        .form-header h1 {
+        font-size: 24px;
+        margin: 0;
+        }
+        .form-button {
+        text-align: center;
+        }
+        .red{
+        color: red;
+        }
+        body { background-image: url("{!$Resource.vfbg}") !important; }
+        .success-message {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 20px;
+        }
+        
+        .success-message p {
+        font-size: 16px;
+        margin: 10px 0;
+        }
+        .message-box {
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        width: 90%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin-top: 100px;
+        }
+        
+    </style>
+    <div id="pay" style="display:block;">
+        <apex:form id="paymentForm">
+            <div class="slds-container--fluid container">
+                <div class="form-header">
+                    <h1 class="slds-text-heading_large">Silambam Monthly Fee Payment</h1>
+                </div>
+                
+                <div class="slds-form-element" id="nameField">
+                    <label class="slds-form-element__label" for="name">Type your Name/Mobile:</label>
+                    <input type="text" id="name" class="slds-input" required="true" oninput="searchContacts()" />
+                    <div class="slds-form-element__help red" id="nameError"></div>
+                    <ul id="contactSuggestions" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" style="display:none; position: absolute; z-index: 999;"></ul>
+                </div>
+                <div id="emfield" style="display:none">
+                    
+                    <div class="slds-form-element" id="emailField">
+                        <label class="slds-form-element__label" for="email">Email:</label>
+                        <output type="email" id="email" class="slds-input" required="true" oninput="validateEmail()"  />
+                        <div class="slds-form-element__help red" id="emailError"></div>
+                    </div>
+                    
+                    <div class="slds-form-element" id="mobileField">
+                        <label class="slds-form-element__label" for="mobile">Mobile:</label>
+                        <output type="tel" id="mobile" class="slds-input" required="true"  />
+                        <div class="slds-form-element__help red" id="mobileError"></div>
+                    </div>
+                
+                <div class="slds-form-element" id="amountField">
+                    <label class="slds-form-element__label" for="amount">Amount:</label>
+                    <select id="amount" class="slds-select" required="true">
+                        <option value="">Select amount</option>
+                        <option id="dynamicOption" value="500">₹500 - Silambam for </option>
+                        <option value="1">₹1</option>
+                    </select>
+                    <div class="slds-form-element__help red" id="amountError"></div>
+                </div>
+                    </div>
+                
+                <div class="slds-form-element" id="totalAmountField">
+                    <!--<label class="slds-form-element__label" for="totalAmount">Total Amount:</label>-->
+                    <p id="totalAmount" class="slds-output"></p>
+                </div>
+                
+                <div class="slds-form-element form-button">
+                    <button id="rzp-button1" class="slds-button slds-button_brand" type="button">
+                        <i class="fas fa-money-bill"></i> Submit and Pay
+                    </button>
+                </div>
+            </div>
+        </apex:form>
+    </div>
+    
+    <div class="message-box slds-form-element form-button" id="messageBox" style="display:none">
+        <div id="displayArea"></div>
+    </div>
+    <!-- Include Razorpay checkout script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <script>
+        var leadId = '';
+    var formData = {
+        name: '',
+        email: '',
+        mobile: '',
+        amount:'',
+        totalAmount:'',
+        response:''
+        
+    };
+    
+    function searchContacts() {
+        var name = document.getElementById('name').value;
+        if (name.length > 2) {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.RazorpayController.getContacts}',
+                name,
+                function(result, event) {
+                    if (event.status) {
+                        var suggestions = document.getElementById('contactSuggestions');
+                        suggestions.innerHTML = '';
+                        result.forEach(function(contact) {
+                            var li = document.createElement('li');
+                            li.className = 'slds-dropdown__item';
+                            li.innerHTML = '<a href="javascript:void(0);" onclick="selectContact(\'' + contact.Id + '\', \'' + contact.Name + '\', \'' + contact.Email + '\', \'' + contact.MobilePhone + '\')">' + contact.Name + ' (' + contact.MobilePhone + ')</a>';
+                            suggestions.appendChild(li);
+                        });
+                        suggestions.style.display = 'block';
+                    } else {
+                        console.log(event);
+                    }
+                }
+            );
+        } else {
+            document.getElementById('contactSuggestions').style.display = 'none';
+        }
+    }
+    
+    function selectContact(contactId, contactName, contactEmail, contactPhone) {
+        document.getElementById('emfield').style.display = 'block';
+        document.getElementById('name').value = contactName;
+        formData.name = contactName;
+        document.getElementById('email').value = contactEmail;
+        formData.email = contactEmail;
+        document.getElementById('mobile').value = contactPhone;
+        formData.mobile = contactPhone;
+        document.getElementById('contactSuggestions').style.display = 'none';
+    }
+    
+    function displayCurrentMonth() {
+        var date = new Date();
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        var monthName = monthNames[date.getMonth()];
+        // Update the option text with the current month name
+        var dynamicOption = document.getElementById('dynamicOption');
+        dynamicOption.innerHTML = `₹500 - Silambam for ${monthName}`;
+            }
+            
+            // Call the function to display the current month when the page loads
+            window.onload = displayCurrentMonth;
+            
+            document.addEventListener('DOMContentLoaded', function () {
+                
+                
+                document.getElementById('name').onchange = function(e) {
+                    formData.name = e.target.value;
+                    validateField('name');
+                };
+                
+                document.getElementById('email').onchange = function(e) {
+                    formData.email = e.target.value;
+                    validateField('email');
+                };
+                
+                document.getElementById('mobile').onchange = function(e) {
+                    formData.mobile = e.target.value;
+                    validateField('mobile');
+                };
+                
+                document.getElementById('amount').onchange = function(e) {
+                    formData.amount = e.target.value;
+                    formData.amount = parseFloat(formData.amount);
+                    validateField('amount');
+                    if (e.target.value != 'Select amount') {
+                        calculateTotalAmount(e.target.value);
+                    } else {
+                        document.getElementById('totalAmount').innerHTML = '';
+                    }
+                };
+                
+                
+                
+                
+                document.getElementById('rzp-button1').onclick = function (e) {
+                    e.preventDefault();
+                    if(formData.name !== '' && formData.email == ''){
+				    alert('You have not registered, please register.'); 
+                        window.top.location.href = 'https://sreesakthinarpanimandram-dev-ed.develop.my.site.com/sakthi/s/new-registration';
+                        formData.name = '';
+                        document.getElementById('name').value = '';
+                        //resetForm();
+                    }
+                    var isValid = validateForm();
+                    if (isValid) {
+                        proceedWithPayment();
+                    }
+                };
+            });
+                                      
+                                      // Function to validate a single field
+                                      function validateField(fieldName) {
+                                          var field = document.getElementById(fieldName);
+                                          var fieldValue = field.value.trim();
+                                          var errorField = document.getElementById(fieldName + 'Error');
+                                          
+                                          
+                                          
+                                          if (fieldName === 'email' && formData.email != ''){
+                                              var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                              if (!emailPattern.test(formData.email)) {
+                                                  field.classList.add('slds-has-error');
+                                                  errorField.textContent = 'Please enter a valid email address.';
+                                                  return false;
+                                              }
+                                          }
+                                          
+                                          if (fieldName === 'mobile' && formData.mobile != ''){
+                                              var mobilePattern = /^\d{10}$/;
+                                              if (!mobilePattern.test(formData.mobile)) {
+                                                  field.classList.add('slds-has-error');
+                                                  errorField.textContent = 'Mobile number must contain 10 digits.';
+                                                  return false;
+                                              }
+                                          }
+                                          
+                                          if (fieldName === 'amount' && fieldValue === 'Select amount') {
+                                              field.classList.add('slds-has-error');
+                                              errorField.textContent = 'This field is required.';
+                                              return false;
+                                          } else if (!fieldValue) {
+                                              field.classList.add('slds-has-error');
+                                              errorField.textContent = 'This field is required.';
+                                              return false;
+                                          } else {
+                                              field.classList.remove('slds-has-error');
+                                              errorField.textContent = '';
+                                              return true;
+                                          }
+                                      }
+                                      
+                                      
+                                      function validateForm() {
+                var isValid = true;
+                var requiredFields = ['name', 'email', 'mobile', 'amount'];
+                requiredFields.forEach(function(fieldName) {
+                    if (!validateField(fieldName)) {
+                        isValid = false;
+                    }
+                });
+                
+                return isValid;
+            }
+        
+        function calculateTotalAmount(amount) {
+            var platformFee = amount * 0.02;
+            var totalAmount = parseFloat(amount) + platformFee;
+            formData.totalAmount = totalAmount*100;
+            document.getElementById('totalAmount').innerHTML = '';
+        }
+        
+        function resetForm() {
+            console.log('ertyu');
+            //document.getElementById('paymentForm').reset();
+            document.getElementById('name').value = "";
+            document.getElementById('email').value = "";
+            document.getElementById('mobile').value = "";
+            document.getElementById('amount').value = "Select amount";
+            document.getElementById('totalAmount').innerHTML ="";
+            
+            
+        }
+        
+        const today = new Date();
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const monthName = monthNames[today.getMonth()];
+        // Function to proceed with payment
+        function proceedWithPayment() {
+            // Validate the form
+            //console.log('data'+formData.name+formData.email);
+            var jsonData = JSON.stringify(formData);
+            console.log('data2'+jsonData);
+            if (document.getElementById('{!$Component.paymentForm}').checkValidity()) {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.RazorpayController.getLead}',
+                    jsonData,
+                    function(result, event) {
+                        if (event.status) {
+                            leadId = result;
+                            console.log('result',result);
+                            if(result.includes('error') || result.includes('ERROR') || result.includes('Error')){
+                                alert('Something went wrong, Please try after sometime.');
+                                resetForm();
+                                return;
+                            }else if(result.includes('duplicate')){
+                                alert('You have already registered and paid with same Name, Email');
+                                resetForm();
+                                return;
+                            }else if(result.includes('nolead')){
+                                alert('You have not registered, please register.');
+                                resetForm();
+                                return;
+                            }
+                            var options = {
+                                "key": "rzp_live_vtZrAdXznmyD96",
+                                "amount": formData.amount*100,
+                                "currency": "INR",
+                                "name": "Sakthi",
+                                "description": monthName+" Silambam Fee",
+                                "image": "https://cdn.razorpay.com/logos/OAHDxhYY6USXDQ_large.png",
+                                "prefill": {
+                                    "email": formData.email,
+                                    "contact": formData.mobile
+                                },
+                                "handler": function (response) {
+                                    // Call Apex method to create Lead
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    Visualforce.remoting.Manager.invokeAction(
+                                        '{!$RemoteAction.RazorpayController.updateContact}',
+                                        leadId,
+                                        response.razorpay_payment_id,
+                                        'success',
+                                        formData.amount,
+                                        function(result, event) {
+                                            if (event.status) {
+                                                resetForm();
+                                                var paymentForm = document.getElementById('pay');
+                                                paymentForm.style.display = "none";
+                                                var displayArea = document.getElementById('displayArea');
+                                                var value = leadId;
+                                                displayArea.innerHTML = 'Hi '+formData.name+', you have successfully completed the registration. Your registrtion id is '+value+' and payment reference Id is '+response.razorpay_payment_id+' Thank you.';
+                                                var message = document.getElementById('messageBox');
+                                                message.style.display = "block";
+                                                //alert('Payment successful. Payment ID: ' + response.razorpay_payment_id);
+                                            } else {
+                                                console.error(event.message);
+                                            }
+                                        }
+                                    );
+                                },
+                                "modal": {
+                                    "ondismiss": function () {
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        console.log('response1'+formData.response);
+                                        if(formData.response !== null && formData.response !== ''){
+                                            console.log('response2'+formData.response);
+                                            
+                                        }else{
+                                            console.log('response3'+formData.response);
+                                            Visualforce.remoting.Manager.invokeAction(
+                                                '{!$RemoteAction.RazorpayController.updateContact}',
+                                                leadId,
+                                                'null',
+                                                'canceled',
+                                                formData.amount,
+                                                function(result, event) {
+                                                    if (event.status) {
+                                                        console.log('result'+result);
+                                                    }
+                                                }
+                                            );
+                                        }
+                                        resetForm();
+                                        var paymentForm = document.getElementById('pay');
+                                        paymentForm.style.display = "none";
+                                        var displayArea = document.getElementById('displayArea');
+                                        var value = leadId;
+                                        if(formData.response !== null && formData.response !== ''){
+                                            console.log('response4'+formData.response);
+                                            displayArea.innerHTML = 'Hi '+formData.name+', your payment has been failed. Your registration reference Id is ' + value+ 
+                                                ' and payment reference Id is '+formData.response;
+                                        }else{
+                                            console.log('response5'+formData.response);
+                                            displayArea.innerHTML = 'Hi '+formData.name+', you have canceled the payment. Your reference Id is ' + value;
+                                        }
+                                        var message = document.getElementById('messageBox');
+                                        message.style.display = "block";
+                                        //if (confirm("Are you sure you want to close the form?")) {
+                                        //    console.log("Checkout form closed by the user");
+                                        //} else {
+                                        console.log("Complete the Payment");
+                                        //}
+                                    }
+                                }
+                            };
+                            
+                            var rzp1 = new Razorpay(options);
+                            
+                            // Adding event listener for payment failures
+                            rzp1.on('payment.failed', function (response) {
+                                // Call Apex method to create Lead with failed status
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                formData.response = response.error.metadata.payment_id;
+                                Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.RazorpayController.updateContact}',
+                                    leadId,
+                                    response.error.metadata.payment_id,
+                                    'failed',
+                                    formData.amount,
+                                    function(result, event) {
+                                        if (event.status) {
+                                            resetForm();
+                                            rzp1.close();
+                                            var paymentForm = document.getElementById('pay');
+                                            paymentForm.style.display = "none";
+                                            var displayArea = document.getElementById('displayArea');
+                                            var value = leadId;
+                                            displayArea.innerHTML = 'Hi '+formData.name+', your payment has been failed. Your registration reference Id is ' + value+ 
+                                                ' and payment reference Id is '+response.error.metadata.payment_id;
+                                            var message = document.getElementById('messageBox');
+                                            message.style.display = "block";
+                                            //alert('Payment failed. Error: ' + response.error.description);
+                                        } else {
+                                            console.error(event.message);
+                                        }
+                                    }
+                                );
+                            });
+                            
+                            rzp1.open();
+                        }
+                    }
+                );
+            }
+        }
+        </script>
+</apex:page>

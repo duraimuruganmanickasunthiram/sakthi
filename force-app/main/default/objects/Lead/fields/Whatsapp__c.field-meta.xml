@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Whatsapp__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(  Paid_Status__c  = true , HYPERLINK(&quot;https://wa.me/+91&quot;&amp; MobilePhone&amp;&quot;?text=Hi%20&quot;&amp; LastName &amp;&quot;%2C%20%0A%0AJust%20wanted%20to%20say%20a%20big%20thank%20you%20for%20registering%20for%20our%20chess%20tournament!%20Your%20participation%20means%20a%20lot%20to%20us%2C%20and%20we%20can%27t%20wait%20to%20see%20you%20on%20May%2025th!%20If%20you%20have%20a%20chess%20mat%2C%20feel%20free%20to%20bring%20it%20along%20for%20added%20comfort.%20%0A%0AYour%20confirmation%20ID%20is%20%5B&quot;&amp; Registration_Id__c&amp;&quot;%5D%20in%20category%20&quot; &amp; IF( ISPICKVAL( Category__c , &apos;Pro Play - Under 18 (₹199)&apos;) , &apos;Pro Play&apos;, &apos;Fun Play&apos;) &amp;&quot; %5D.%20Keep%20it%20handy%20for%20the%20tournament%20day.%20Looking%20forward%20to%20some%20great%20games%20and%20fun%20times%20together!%20%0A%0ABest%20regards%2C%0ASakthi%20Team&quot;, &quot;Whatsapp&quot;), HYPERLINK(
+    &quot;https://wa.me/+91&quot; &amp; MobilePhone &amp; 
+    &quot;?text=Hello%20&quot; &amp; LastName &amp; &quot;%2C%0A%0A&quot; &amp;
+    &quot;We%20hope%20this%20message%20finds%20you%20well.%0A%0A&quot; &amp;
+    &quot;We%20wanted%20to%20touch%20base%20regarding%20your%20registration%20for%20the%20Sakthi%20Chess%20Tournament.%20&quot; &amp;
+    &quot;It%20seems%20that%20while%20you&apos;ve%20successfully%20registered%20%5BRegistration%20Id%3A%20&quot; &amp; Registration_Id__c &amp; &quot;%5D%2C%20&quot; &amp;
+    &quot;we%20haven&apos;t%20received%20your%20payment%20yet.%0A%0A&quot; &amp;
+    &quot;If%20you%20missed%20the%20payment%20page%2C%20please%20use%20the%20following%20link%20to%20complete%20your%20payment%20&quot; &amp;
+    &quot;for%20the%20&quot;&amp;IF( ISPICKVAL( Category__c , &apos;Pro Play - Under 18 (₹199)&apos;) , &apos;Pro Play&apos;, &apos;Fun Play&apos;)&amp;&quot;%20category%3A%20%5BPayment%20Link%3A%20https%3A%2F%2Frzp.io%2Fl%2F&quot;&amp;IF( ISPICKVAL( Category__c , &apos;Pro Play - Under 18 (₹199)&apos;) , &apos;proplay&apos;, &apos;funplay&apos;)&amp;&quot;%20%5D.%0A%0A&quot; &amp;
+    &quot;Thank%20you%20for%20your%20prompt%20attention%20to%20this%20matter.%0A%0A&quot; &amp;
+    &quot;Best%20regards%2C%0ASakthi%20Team&quot;,
+    &quot;Whatsapp&quot;
+)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Whatsapp</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
